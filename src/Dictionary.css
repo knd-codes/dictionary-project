@@ -1,3 +1,19 @@
-.Dictionary {
-  background: white;
+.Dictionary h1 {
+  font-size: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 20px 0;
+}
+
+.Dictionary section {
+  border-radius: 10px;
+  padding: 30px;
+  margin: 6px 0;
+}
+
+.Dictionary input {
+  text-align: center;
+  border: 1px solid #f3829a;
+  border-radius: 10px;
+  padding: 6px 10px;
+  width: 35%;
 }
