@@ -1,32 +1,44 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Results from "./Results"
+import Results from "./Results";
+import Photos from "./Photos";
 import "./Dictionary.css";
 
 export default function Dictionary(props) {
-    let [keyword, setKeyword] = useState(props.defaultKeyword);
-    let [results, setResults] = useState(null);
-    let [loaded, setLoaded] = useState(false);
+  let [keyword, setKeyword] = useState(props.defaultKeyword);
+  let [results, setResults] = useState(null);
+  let [loaded, setLoaded] = useState(false);
+  let [photos, setPhotos] = useState(null);
 
-    function handleDictionResponse(response) {
-        setResults(response.data[0]);
+  function handleDictionResponse(response) {
+    setResults(response.data[0]);
   }
 
-    function search() {
-    let apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${keyword}`;
+  function handlePexelsResponse(response) {
+    setPhotos(response.data.photos);
+  }
+
+  function search() {
+    let apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en_US/${keyword}`;
     axios.get(apiUrl).then(handleDictionResponse);
+
+    let pexelsApiKey =
+      "563492ad6f9170000100000121f4c6b5c2dd4550ad18a1997ff17b47";
+    let pexelsApiUrl = `https://api.pexels.com/v1/search?query=${keyword}&per_page=9`;
+    let headers = { Authorization: `Bearer ${pexelsApiKey}` };
+    axios.get(pexelsApiUrl, { headers: headers }).then(handlePexelsResponse);
   }
 
-    function handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
     search();
   }
 
-    function handleKeywordChange(event) {
+  function handleKeywordChange(event) {
     setKeyword(event.target.value);
   }
 
-    function load() {
+  function load() {
     setLoaded(true);
     search();
   }
@@ -34,11 +46,12 @@ export default function Dictionary(props) {
   if (loaded) {
     return (
       <div className="Dictionary">
+        <section>
           <center>
           <h1>
-                  Welcome! <br /><br />
-          What word do you want to search?
-          </h1>
+            Welcome! <br /> <br />
+            What word do you want to search?
+            </h1>
           <form onSubmit={handleSubmit}>
             <input
               type="search"
@@ -47,9 +60,9 @@ export default function Dictionary(props) {
             />
           </form>
           </center>
-        <section>
-        <Results results={results} />
         </section>
+        <Results results={results} />
+        <Photos photos={photos} />
       </div>
     );
   } else {
